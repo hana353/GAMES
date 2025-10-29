@@ -57,7 +57,7 @@ const items = {
 const folderOfType = {
   hat: "hat",
   clothes: "clothes",
-  accessory: "Accesory",  // đúng chính tả hiện tại
+  accessory: "accesory",  // đúng chính tả hiện tại
   pet: "pet",
 };
 
