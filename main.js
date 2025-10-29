@@ -55,11 +55,12 @@ const items = {
 
 // Map type -> folder name
 const folderOfType = {
-  hat: "Hat",
-  clothes: "Clothes",
-  accessory: "Accessory", 
-  pet: "Pet",
+  hat: "hat",
+  clothes: "clothes",
+  accessory: "Accesory",  // đúng chính tả hiện tại
+  pet: "pet",
 };
+
 
 // Biến lưu loại hiện đang mở
 let currentType = null;
