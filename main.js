@@ -258,7 +258,9 @@ document.getElementById("shareBtn").onclick = async function () {
   const imgData = canvas.toDataURL("image/png");
 
   // 💬 Tạo nội dung chia sẻ
-  const text = encodeURIComponent("Siggy Siêu Sao – Hóa Trang Bá Đạo! ✨ #SiggySieuSao");
+const text = encodeURIComponent(
+  "🎃 I just joined #SiggyHalloween contest!\n\nHelp Siggy get the purr-fect Halloween outfit 👻\n\nTry it now 👉 siggyhalloween.ritual.fun"
+);
   const twitterUrl = `https://twitter.com/intent/tweet?text=${text}`;
 
   // ⚡ Hiển thị ảnh vừa chụp để người chơi lưu hoặc tweet

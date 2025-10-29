@@ -10,7 +10,7 @@ body {
   background-position: center;
   background-attachment: fixed;
 
-  position: relative;
+  position: relative; 
   overflow: auto; /* cho phép cuộn nếu cần trên màn hình rất nhỏ */
 }
 
@@ -28,41 +28,89 @@ body {
 
 
 /* 🎀 KHUNG CHÍNH */
+/* Khung chính nằm giữa màn hình */
 #box {
   border-radius: 20px;
-  margin: auto;
   text-align: center;
-  /* Square, responsive – co lại mạnh hơn để phù hợp mọi desktop */
   width: min(60vmin, 80vh, 90vw, 620px);
   height: min(60vmin, 80vh, 90vw, 620px);
   position: relative;
   z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Đưa phần button xuống dưới */
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* 🩵 TIÊU ĐỀ */
 #heading {
-  font-size: 28px;
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #aaffc2;
+  letter-spacing: 2px;
   text-align: center;
-  color: snow;
-  text-shadow: 0 4px 5px rgb(24, 25, 88);
-  font-family: "Trebuchet MS", sans-serif;
-  margin-top: 8px;
+  z-index: 20;
+
+  /* 🌿 Hiệu ứng ánh sáng */
+  text-shadow:
+    0 0 8px #4cff7a,
+    0 0 16px #89ff9f,
+    0 0 28px #ffffff;
+
+  /* 🌫️ Khung mờ xung quanh */
+  background: rgba(20, 40, 20, 0.55); /* xanh lá đậm, trong suốt nhẹ */
+  padding: 10px 25px;
+  border-radius: 16px;
+  box-shadow:
+    0 0 25px rgba(100, 255, 150, 0.4),
+    0 0 50px rgba(180, 255, 200, 0.25),
+    inset 0 0 15px rgba(120, 255, 160, 0.2);
+
+  /* ✨ Hiệu ứng nhấp nháy */
+  animation: glowPulse 2.5s ease-in-out infinite;
 }
 
-/* 👧 NHÂN VẬT */
+/* 💫 Hiệu ứng nhấp nháy ánh sáng */
+@keyframes glowPulse {
+  0% {
+    color: #4cff7a;
+    box-shadow:
+      0 0 20px rgba(80, 255, 120, 0.5),
+      0 0 40px rgba(150, 255, 190, 0.3),
+      inset 0 0 12px rgba(90, 255, 150, 0.2);
+  }
+  50% {
+    color: #ffffff;
+    box-shadow:
+      0 0 25px rgba(120, 255, 180, 0.7),
+      0 0 55px rgba(190, 255, 220, 0.5),
+      inset 0 0 20px rgba(140, 255, 190, 0.3);
+  }
+  100% {
+    color: #4cff7a;
+    box-shadow:
+      0 0 20px rgba(80, 255, 120, 0.5),
+      0 0 40px rgba(150, 255, 190, 0.3),
+      inset 0 0 12px rgba(90, 255, 150, 0.2);
+  }
+}
+
+
+/* Nhân vật chiếm phần giữa khung */
 #character {
-  position: relative;
+  flex: 1;
   width: 100%;
-  height: 100%;
-  margin: auto;
-  overflow: hidden;
-  border-radius: 20px;
   background-color: #fff;
-
-  /* 🌸 Viền mỏng sáng */
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
   border: 3px solid rgba(255, 255, 255, 0.8);
-
-  /* ✨ Hiệu ứng ánh sáng nhẹ quanh viền */
   box-shadow: 0 0 18px rgba(120, 140, 255, 0.6);
 }
 
@@ -166,8 +214,14 @@ body {
 }
 
 /* 💜 NÚT CHỌN ITEM */
+/* Nhóm nút căn sát đáy khung */
 .buttonBox {
-  margin: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-bottom: 10px; /* Tạo khoảng cách nhẹ với mép khung */
+  margin: 0;
 }
 button {
   margin-top: 1em;
@@ -208,10 +262,16 @@ button:hover {
   height: 64px;
 }
   
+/* Toàn bộ khu vực chính căn giữa màn hình */
 #captureArea {
   position: relative;
   width: 100%;
   min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Căn giữa dọc */
+  align-items: center;     /* Căn giữa ngang */
 
   background: url("./images4/background.png") no-repeat center center fixed;
   background-size: cover;
