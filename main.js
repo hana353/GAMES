@@ -390,7 +390,7 @@ function buildTwitterUrl() {
   const text = encodeURIComponent(
     '🎃 I just joined #SiggyHalloween contest!\n\n' +
     'Help Siggy get the purr-fect Halloween outfit 👻\n\n' +
-    'Try it now 👉 siggyhalloween.ritual.fun'
+    'Try it now 👉 https://siggyhalloween-ritual.xyz/ '
   );
   return `https://twitter.com/intent/tweet?text=${text}`;
 }
