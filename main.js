@@ -431,7 +431,7 @@ function buildTwitterUrl() {
     '🎃 I just joined #SiggyHalloween! \n\n' +
     'Help Siggy get the purr-fect Halloween outfit 👻\n\n' +
     'Try it now 👉 https://siggyhalloween-ritual.xyz/ \n\n ' +
-    '#Ritualnet #Ritualfnd @RitualVietnam'
+    '#Ritualnet #Ritualfnd'
   );
   return `https://twitter.com/intent/tweet?text=${text}`;
 }
