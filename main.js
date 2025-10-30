@@ -1,4 +1,3 @@
-
 // Configuration
 const CONFIG = {
   multiSelectTypes: new Set(['accessory', 'pet']),
@@ -284,19 +283,26 @@ function createCaptureWrapper() {
   // Get character dimensions
   const charRect = DOM.character.getBoundingClientRect();
   
-  // Create wrapper with exact character size
+  // Force square aspect ratio - use the smaller dimension or force square
+  const size = Math.min(charRect.width, charRect.height);
+  const captureWidth = size;
+  const captureHeight = size;
+  
+  // Create wrapper with EXACT square size
   const wrapper = document.createElement('div');
   Object.assign(wrapper.style, {
     position: 'fixed',
     top: '-9999px',
     left: '-9999px',
-    width: `${charRect.width}px`,
-    height: `${charRect.height}px`,
+    width: `${captureWidth}px`,
+    height: `${captureHeight}px`,
     overflow: 'hidden',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    imageRendering: 'high-quality',
+    imageRendering: '-webkit-optimize-contrast'
   });
 
-  // Add background layer
+  // Add background layer - fit within wrapper dimensions
   const bgLayer = document.createElement('div');
   Object.assign(bgLayer.style, {
     position: 'absolute',
@@ -307,8 +313,10 @@ function createCaptureWrapper() {
     backgroundImage: "url('./images4/background2.png')",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
     opacity: '0.3',
-    zIndex: '0'
+    zIndex: '0',
+    imageRendering: 'high-quality'
   });
   wrapper.appendChild(bgLayer);
 
@@ -320,8 +328,23 @@ function createCaptureWrapper() {
     height: '100%',
     background: 'transparent',
     border: 'none',
-    boxShadow: 'none'
+    boxShadow: 'none',
+    imageRendering: 'high-quality',
+    imageRendering: '-webkit-optimize-contrast'
   });
+  
+  // Ensure all child elements have high quality rendering and proper sizing
+  const allChildren = charClone.querySelectorAll('*');
+  allChildren.forEach(child => {
+    child.style.imageRendering = 'high-quality';
+    child.style.imageRendering = '-webkit-optimize-contrast';
+    // Force children to respect parent dimensions
+    if (child.style.position === 'absolute') {
+      child.style.maxWidth = '100%';
+      child.style.maxHeight = '100%';
+    }
+  });
+  
   wrapper.appendChild(charClone);
 
   return wrapper;
@@ -370,25 +393,27 @@ function waitForImagesToLoad(element) {
 }
 
 async function captureCharacter(wrapper) {
-  // Calculate optimal scale based on device pixel ratio
+  // Calculate optimal scale for high quality without making wrapper larger
   const devicePixelRatio = window.devicePixelRatio || 1;
-  const optimalScale = Math.max(3, devicePixelRatio * 2); // Minimum 3x, or 2x device pixel ratio
+  const optimalScale = Math.max(4, devicePixelRatio * 2); // 4x minimum for crisp images
   
   const canvas = await html2canvas(wrapper, {
     backgroundColor: null,
     useCORS: true,
     allowTaint: false,
-    scale: optimalScale, // Increased from 2 to at least 3
+    scale: optimalScale,
     width: wrapper.offsetWidth,
     height: wrapper.offsetHeight,
+    x: 0,
+    y: 0,
+    scrollX: 0,
+    scrollY: 0,
     logging: false,
     imageTimeout: 5000,
-    // Additional quality settings
-    foreignObjectRendering: false, // Better compatibility
+    foreignObjectRendering: false,
     removeContainer: true,
     async: true,
     onclone: (clonedDoc) => {
-      // Ensure all images are fully rendered in clone
       const clonedWrapper = clonedDoc.querySelector('div');
       if (clonedWrapper) {
         clonedWrapper.style.imageRendering = 'high-quality';
@@ -398,7 +423,7 @@ async function captureCharacter(wrapper) {
   });
   
   // Convert to high-quality PNG
-  return canvas.toDataURL('image/png', 1.0); // Maximum quality
+  return canvas.toDataURL('image/png', 1.0);
 }
 
 function buildTwitterUrl() {
@@ -497,13 +522,13 @@ function showShareModal(imgData) {
         display: flex;
         gap: 12px;
         margin-top: 20px;
-        flex-wrap: nowrap; /* keep in one row */
+        flex-wrap: nowrap;
       }
       .btn {
-        flex: 1 1 0%; /* equal widths */
-        min-width: 0; /* allow equal distribution */
+        flex: 1 1 0%;
+        min-width: 0;
         padding: 14px 20px;
-        height: 48px; /* equal height */
+        height: 48px;
         border: none;
         border-radius: 10px;
         font-size: 16px;
@@ -520,17 +545,16 @@ function showShareModal(imgData) {
       .btn-twitter {
         background: #1da1f2;
         color: white;
-         margin-top: 17px;
+        margin-top: 17px;
       }
       .btn-twitter:hover {
-        background:rgb(20, 123, 187);
+        background: rgb(20, 123, 187);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(29,161,242,0.4);
       }
       .btn-download {
         background: #10b981;
         color: white;
-        
       }
       .btn-download:hover {
         background: #059669;
@@ -563,7 +587,6 @@ function showShareModal(imgData) {
         font-size: 14px;
         display: none;
       }
-      /* Keep buttons on one line on small screens too */
       @media (max-width: 600px) {
         .button-group { overflow-x: auto; }
         .btn { flex: 1 1 0%; }
@@ -632,12 +655,35 @@ window.downloadImage = function() {
   const img = document.getElementById('siggyImage');
   if (!img) return;
   
-  const link = document.createElement('a');
-  link.href = img.src;
-  link.download = `siggy-halloween-${Date.now()}.png`;
-  link.click();
+  // Create a temporary canvas to ensure maximum quality
+  const tempCanvas = document.createElement('canvas');
+  const tempImg = new Image();
   
-  showSuccessMessage('Image downloaded! 💾');
+  tempImg.onload = function() {
+    // Set canvas to image dimensions
+    tempCanvas.width = tempImg.width;
+    tempCanvas.height = tempImg.height;
+    
+    // Draw with high quality settings
+    const ctx = tempCanvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(tempImg, 0, 0);
+    
+    // Convert to blob with maximum quality
+    tempCanvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `siggy-halloween-${Date.now()}.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      showSuccessMessage('Image downloaded! 💾');
+    }, 'image/png', 1.0);
+  };
+  
+  tempImg.src = img.src;
 };
 
 // Copy image to clipboard
