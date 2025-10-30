@@ -388,7 +388,7 @@ async function captureCharacter(wrapper) {
 
 function buildTwitterUrl() {
   const text = encodeURIComponent(
-    '🎃 I just joined #SiggyHalloween contest!\n\n' +
+    '🎃 I just joined #SiggyHalloween!\n\n' +
     'Help Siggy get the purr-fect Halloween outfit 👻\n\n' +
     'Try it now 👉 https://siggyhalloween-ritual.xyz/ \n\n ' +
     '#Ritualnet #Ritualfnd @RitualVietnam'
