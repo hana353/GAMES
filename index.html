@@ -12,10 +12,12 @@
   <body>
 <div id="captureArea">
 
-    <h1 id="heading">Ritual (❖,❖)</h1>
+    <h1 id="heading">Ritual (■,■)</h1>
 
     <div id="box">
       <div id="character">
+        <div id="background"></div>
+        <div id="skin"></div>
         <div id="girl"></div>
         <div id="clothes"></div>
         <div id="hat"></div>
@@ -49,6 +51,8 @@
 
     <!-- Tách khối nút ra ngoài để ghim sát đáy màn hình -->
     <div class="buttonBox">
+      <button onclick="showItems('skin')">Skin</button>
+      <button onclick="showItems('background')">Background</button>
       <button onclick="showItems('hat')">Hat</button>
       <button onclick="showItems('clothes')">Clothes</button>
       <button onclick="showItems('accessory')">Accessory</button>
