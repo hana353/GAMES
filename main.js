@@ -370,20 +370,36 @@ function waitForImagesToLoad(element) {
 }
 
 async function captureCharacter(wrapper) {
+  // Calculate optimal scale based on device pixel ratio
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  const optimalScale = Math.max(3, devicePixelRatio * 2); // Minimum 3x, or 2x device pixel ratio
+  
   const canvas = await html2canvas(wrapper, {
     backgroundColor: null,
     useCORS: true,
     allowTaint: false,
-    scale: 2,
+    scale: optimalScale, // Increased from 2 to at least 3
     width: wrapper.offsetWidth,
     height: wrapper.offsetHeight,
     logging: false,
-    imageTimeout: 5000 // 5 second timeout for images
+    imageTimeout: 5000,
+    // Additional quality settings
+    foreignObjectRendering: false, // Better compatibility
+    removeContainer: true,
+    async: true,
+    onclone: (clonedDoc) => {
+      // Ensure all images are fully rendered in clone
+      const clonedWrapper = clonedDoc.querySelector('div');
+      if (clonedWrapper) {
+        clonedWrapper.style.imageRendering = 'high-quality';
+        clonedWrapper.style.imageRendering = '-webkit-optimize-contrast';
+      }
+    }
   });
-  return canvas.toDataURL('image/png');
+  
+  // Convert to high-quality PNG
+  return canvas.toDataURL('image/png', 1.0); // Maximum quality
 }
-
-
 
 function buildTwitterUrl() {
   const text = encodeURIComponent(
